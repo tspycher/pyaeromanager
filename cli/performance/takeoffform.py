@@ -9,12 +9,14 @@ class TakeoffForm(npyscreen.ActionForm):
         self.oat = self.add(npyscreen.TitleText, name = "OAT (C):")
         self.qnh = self.add(npyscreen.TitleText, name = "QNH (hpA):")
         self.pa = self.add(npyscreen.TitleFixedText, name = "PA:")
+        self.da = self.add(npyscreen.TitleFixedText, name = "DA:")
 
     def beforeEditing(self):
-        self.ad_elv.set_value("0")
-        self.oat.set_value("0")
-        self.qnh.set_value("0")
+        self.ad_elv.set_value(str(self.document.ad_elv))
+        self.oat.set_value(str(self.document.oat))
+        self.qnh.set_value(str(self.document.qnh))
         self.pa.set_value("0")
+        self.da.set_value("0")
 
     def on_ok(self):
         self.parentApp.switchFormPrevious()
@@ -28,4 +30,5 @@ class TakeoffForm(npyscreen.ActionForm):
         self.document.qnh = int(self.qnh.get_value())
 
         self.pa.set_value(self.document.get_pa())
+        self.da.set_value(self.document.get_da())
 
