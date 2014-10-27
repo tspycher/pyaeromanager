@@ -2,7 +2,7 @@ __author__ = 'tspycher'
 import mongoengine
 from app import Isa
 
-class Takeoff(mongoengine.Document):
+class Takeoff(mongoengine.EmbeddedDocument):
     ad_elv = mongoengine.IntField(required=True, default=0)
     qnh = mongoengine.IntField(required=True, default=int(Isa.base_qnh))
     oat = mongoengine.IntField(required=True, default=Isa.tmp_ams)

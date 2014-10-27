@@ -1,10 +1,10 @@
 __author__ = 'tspycher'
 import npyscreen
-from app.documents.takeoff import Takeoff
+from app.documents.flightplan.performance import Takeoff
 
 class TakeoffForm(npyscreen.ActionForm):
     def create(self):
-        self.document = Takeoff()
+        #self.document = Takeoff()
         self.ad_elv   = self.add(npyscreen.TitleText, name = "AD Elev. (ft):",)
         self.oat = self.add(npyscreen.TitleText, name = "OAT (C):")
         self.qnh = self.add(npyscreen.TitleText, name = "QNH (hpA):")
@@ -19,6 +19,8 @@ class TakeoffForm(npyscreen.ActionForm):
         self.da.set_value("0")
 
     def on_ok(self):
+        #self.parentApp.currentFlightplan.performance_takeoff = self.document
+        #self.parent.document.performance_takeoff = self.document
         self.parentApp.switchFormPrevious()
 
     def on_cancel(self):
