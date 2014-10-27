@@ -3,15 +3,25 @@ __author__ = 'tspycher'
 import npyscreen
 from app.documents.flightplan import Flightplan
 
-class FlightplanForm(npyscreen.ActionForm):
+class FlightplanForm(npyscreen.ActionFormWithMenus):
     document = None
 
     def create(self):
         if self.document is None:
             self.document = Flightplan()
 
+        main = self.new_menu("Flightplan Menu")
+        main.addItemsFromList([
+            ("Edit selected Airplane", self._edit_airplane, "a"),
+        ])
+
         self.title = self.add(npyscreen.TitleText, name="Name:")
         self.add(npyscreen.ButtonPress, name="Takeoff Performance", when_pressed_function=self._show_takeoff_form)
+        self.airplane = self.add(npyscreen.TitleSelectOne, name="Airplane:", values=self.parentApp.repository.getAllAirplanes())
+
+    def _edit_airplane(self):
+        self.parentApp.getForm('AIRPLANE').document = self.airplane.get_selected_objects()[0]
+        self.parentApp.switchForm('AIRPLANE')
 
     def _show_takeoff_form(self):
         self.parentApp.getForm('PERFORMANCE_TAKEOFF').document = self.document.performance_takeoff
@@ -19,6 +29,10 @@ class FlightplanForm(npyscreen.ActionForm):
 
     def beforeEditing(self):
         self.title.set_value(self.document.title)
+        for i, val in enumerate(self.airplane.values):
+            if val == self.document.airplane:
+                self.airplane.value = i
+                break
 
     def on_ok(self):
         self.document.save()
@@ -29,3 +43,5 @@ class FlightplanForm(npyscreen.ActionForm):
 
     def while_editing(self, *args, **keywords):
         self.document.title = self.title.get_value()
+        self.document.airplane = self.airplane.get_selected_objects()[0] if self.airplane.get_selected_objects() else None
+
