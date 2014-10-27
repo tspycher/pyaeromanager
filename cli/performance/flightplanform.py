@@ -19,6 +19,8 @@ class FlightplanForm(npyscreen.ActionFormWithMenus):
 
         self.title = self.add(npyscreen.TitleText, name="Name:")
         self.add(npyscreen.ButtonPress, name="Takeoff Performance", when_pressed_function=self._show_takeoff_form)
+        self.add(npyscreen.ButtonPress, name="Weight and Balance", when_pressed_function=self._show_weightbalance_form)
+
         self.airplane = self.add(npyscreen.TitleSelectOne, name="Airplane:", max_height=2, value=[0,],  scroll_exit=True, values=self.parentApp.repository.getAllAirplanes())
 
     def _pdf_flightplan(self):
@@ -31,6 +33,10 @@ class FlightplanForm(npyscreen.ActionFormWithMenus):
     def _show_takeoff_form(self):
         self.parentApp.getForm('PERFORMANCE_TAKEOFF').document = self.document.performance_takeoff
         self.parentApp.switchForm('PERFORMANCE_TAKEOFF')
+
+    def _show_weightbalance_form(self):
+        self.parentApp.getForm('PERFORMANCE_WEIGHTBALANCE').document = self.document.performance_weightbalance
+        self.parentApp.switchForm('PERFORMANCE_WEIGHTBALANCE')
 
     def beforeEditing(self):
         self.title.set_value(self.document.title)

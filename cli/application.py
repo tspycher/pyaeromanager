@@ -1,7 +1,7 @@
 __author__ = 'tspycher'
 
 import npyscreen
-from cli.performance import TakeoffForm, FlightplanForm, FlightplanListDisplay
+from cli.performance import TakeoffForm, FlightplanForm, FlightplanListDisplay, WeightbalanceForm
 from cli.others import AerodromeForm, AirplaneForm
 from .repository import Repository
 
@@ -17,3 +17,4 @@ class Application(npyscreen.NPSAppManaged):
         self.addForm("PERFORMANCE_TAKEOFF", TakeoffForm, name="Takeoff Performance")
         self.addForm("AERODROME", AerodromeForm, name="Aerodrome")
         self.addForm("AIRPLANE", AirplaneForm, name="Airplane")
+        self.addForm("PERFORMANCE_WEIGHTBALANCE", WeightbalanceForm, name="Weight and Balance")

@@ -13,7 +13,7 @@ class Takeoff(mongoengine.EmbeddedDocument):
     rwy_no = mongoengine.IntField(required=False, default=0)
     rwy_lenght = mongoengine.IntField(required=False, default=1640)
     rwy_type = mongoengine.StringField(required=False, choices=[RWY_TYPE_GRASS, RWY_TYPE_ASPH], default=RWY_TYPE_ASPH)
-    aerodrome = mongoengine.ReferenceField(Aerodrome, dbref=True)
+    aerodrome = mongoengine.ReferenceField(Aerodrome, dbref=True, default=Aerodrome())
 
     def get_pa(self):
         delta_hpa = int(Isa.base_qnh) - self.qnh
