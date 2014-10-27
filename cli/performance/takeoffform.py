@@ -1,5 +1,6 @@
 __author__ = 'tspycher'
 import npyscreen
+from app.documents.flightplan.performance import Takeoff
 
 class TakeoffForm(npyscreen.ActionFormWithMenus):
     document = None
@@ -13,8 +14,11 @@ class TakeoffForm(npyscreen.ActionFormWithMenus):
         self.qnh = self.add(npyscreen.TitleText, name = "QNH (hpA):")
         self.pa = self.add(npyscreen.TitleFixedText, name = "PA:")
         self.da = self.add(npyscreen.TitleFixedText, name = "DA:")
-        self.ad_elv   = self.add(npyscreen.TitleFixedText, name = "AD Elev. (ft):",)
-        self.aerodrome = self.add(npyscreen.TitleSelectOne, name="Aerodrome:", values=self.parentApp.repository.getAllAerodromes())
+        self.rwy_lenght = self.add(npyscreen.TitleText, name = "RWY L (ft):")
+        self.rwy_type = self.add(npyscreen.TitleSelectOne, max_height=2, scroll_exit=True, value=[0,], name = "RWY Type:", values=[Takeoff.RWY_TYPE_GRASS,Takeoff.RWY_TYPE_ASPH])
+        self.rwy_no = self.add(npyscreen.TitleText, name = "RWY No:")
+        self.ad_elv   = self.add(npyscreen.TitleFixedText, name = "AD El (ft):",)
+        self.aerodrome = self.add(npyscreen.TitleSelectOne, name="Aerodrome:", max_height=2, value=[0,],  scroll_exit=True, values=self.parentApp.repository.getAllAerodromes())
 
     def _edit_aerodrome(self):
         self.parentApp.getForm('AERODROME').document = self.aerodrome.get_selected_objects()[0]
@@ -23,6 +27,11 @@ class TakeoffForm(npyscreen.ActionFormWithMenus):
     def beforeEditing(self):
         self.oat.set_value(str(self.document.oat))
         self.qnh.set_value(str(self.document.qnh))
+        self.rwy_lenght.set_value(str(self.document.rwy_lenght))
+        self.rwy_type.set_value(str(self.document.rwy_type))
+        self.rwy_no.set_value(str(self.document.rwy_no))
+        self.ad_elv.set_value(str(self.document.aerodrome.msl))
+
         for i, val in enumerate(self.aerodrome.values):
             if val == self.document.aerodrome:
                 self.aerodrome.value = i
@@ -44,5 +53,10 @@ class TakeoffForm(npyscreen.ActionFormWithMenus):
     def while_editing(self, *args, **keywords):
         self.document.oat = int(self.oat.get_value())
         self.document.qnh = int(self.qnh.get_value())
+
+        self.document.rwy_type = self.rwy_type.get_value()
+        self.document.rwy_lenght = int(self.rwy_lenght.get_value())
+        self.document.rwy_no = int(self.rwy_no.get_value())
+
         self.document.aerodrome = self.aerodrome.get_selected_objects()[0] if self.aerodrome.get_selected_objects() else None
         self._show_calculated()

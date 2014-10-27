@@ -9,9 +9,11 @@ class Application(npyscreen.NPSAppManaged):
     repository = None
 
     def onStart(self):
+        #npyscreen.setTheme(npyscreen.Themes.TransparentThemeDarkText)
+
         self.repository = Repository()
-        self.addForm("MAIN", FlightplanListDisplay)
-        self.addForm("FLIGHTPLAN", FlightplanForm)
-        self.addForm("PERFORMANCE_TAKEOFF", TakeoffForm)
-        self.addForm("AERODROME", AerodromeForm)
-        self.addForm("AIRPLANE", AirplaneForm)
+        self.addForm("MAIN", FlightplanListDisplay, name="Available Flightplans")
+        self.addForm("FLIGHTPLAN", FlightplanForm, name="Flightplan Editor")
+        self.addForm("PERFORMANCE_TAKEOFF", TakeoffForm, name="Takeoff Performance")
+        self.addForm("AERODROME", AerodromeForm, name="Aerodrome")
+        self.addForm("AIRPLANE", AirplaneForm, name="Airplane")

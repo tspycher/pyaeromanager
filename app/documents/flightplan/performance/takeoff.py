@@ -4,8 +4,15 @@ from app import Isa
 from app.documents.aerodrome import Aerodrome
 
 class Takeoff(mongoengine.EmbeddedDocument):
+    RWY_TYPE_GRASS = 'grass'
+    RWY_TYPE_ASPH = 'asph'
+
     qnh = mongoengine.IntField(required=True, default=int(Isa.base_qnh))
     oat = mongoengine.IntField(required=True, default=Isa.tmp_ams)
+
+    rwy_no = mongoengine.IntField(required=False, default=0)
+    rwy_lenght = mongoengine.IntField(required=False, default=1640)
+    rwy_type = mongoengine.StringField(required=False, choices=[RWY_TYPE_GRASS, RWY_TYPE_ASPH], default=RWY_TYPE_ASPH)
     aerodrome = mongoengine.ReferenceField(Aerodrome, dbref=True)
 
     def get_pa(self):

@@ -17,6 +17,10 @@ class FlightplanListDisplay(npyscreen.FormMuttWithMenus):
 
     def create(self):
         super(FlightplanListDisplay, self).create()
+
+        self.add(npyscreen.TitleText, name = "Text:", value= "Press Escape to quit application" )
+        #self.how_exited_handers[npyscreen.wgwidget.EXITED_ESCAPE]  = self.exit_application
+
         main = self.new_menu("Main Menu")
         main.addItemsFromList([
             ("New Flightplan", self._new_flightplan, "n"),
