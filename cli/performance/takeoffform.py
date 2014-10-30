@@ -2,7 +2,7 @@ __author__ = 'tspycher'
 import npyscreen
 from app.documents.flightplan.performance import Takeoff
 
-class TakeoffForm(npyscreen.ActionFormWithMenus):
+class TakeoffForm(npyscreen.FormMultiPageActionWithMenus):
     document = None
 
     def create(self):
@@ -14,11 +14,14 @@ class TakeoffForm(npyscreen.ActionFormWithMenus):
         self.qnh = self.add(npyscreen.TitleText, name = "QNH (hpA):")
         self.pa = self.add(npyscreen.TitleFixedText, name = "PA:")
         self.da = self.add(npyscreen.TitleFixedText, name = "DA:")
+        self.add_page()
+
         self.rwy_lenght = self.add(npyscreen.TitleText, name = "RWY L (ft):")
         self.rwy_type = self.add(npyscreen.TitleSelectOne, max_height=2, scroll_exit=True, value=[0,], name = "RWY Type:", values=[Takeoff.RWY_TYPE_GRASS,Takeoff.RWY_TYPE_ASPH])
         self.rwy_no = self.add(npyscreen.TitleText, name = "RWY No:")
         self.ad_elv   = self.add(npyscreen.TitleFixedText, name = "AD El (ft):",)
         self.aerodrome = self.add(npyscreen.TitleSelectOne, name="Aerodrome:", max_height=2, value=[0,],  scroll_exit=True, values=self.parentApp.repository.getAllAerodromes())
+        self.switch_page(0)
 
     def _edit_aerodrome(self):
         self.parentApp.getForm('AERODROME').document = self.aerodrome.get_selected_objects()[0]

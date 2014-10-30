@@ -8,4 +8,7 @@ if __name__ == "__main__":
     #pydevd.settrace('localhost', port=9191, stdoutToServer=True, stderrToServer=True)
     connect()
     App = Application()
-    App.run()
+    try:
+        App.run()
+    except KeyboardInterrupt:
+        pass

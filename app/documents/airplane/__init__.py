@@ -1,3 +1,3 @@
 __author__ = 'tspycher'
 
-from airplane import Airplane
+from airplane import Airplane, PerformanceChart
