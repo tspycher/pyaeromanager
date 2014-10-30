@@ -57,7 +57,7 @@ class TakeoffForm(npyscreen.FormMultiPageActionWithMenus):
         self.document.oat = int(self.oat.get_value())
         self.document.qnh = int(self.qnh.get_value())
 
-        self.document.rwy_type = self.rwy_type.get_value()
+        #self.document.rwy_type = self.rwy_type.get_selected_objects()[0]()
         self.document.rwy_lenght = int(self.rwy_lenght.get_value())
         self.document.rwy_no = int(self.rwy_no.get_value())
 
