@@ -10,7 +10,8 @@ class Application(npyscreen.NPSAppManaged):
 
     def onStart(self):
         #npyscreen.setTheme(npyscreen.Themes.TransparentThemeDarkText)
-
+        npyscreen.notify("""Aeromanger 1.0
+        2014/ by zerodine GmbH""")
         self.repository = Repository()
         self.addForm("MAIN", FlightplanListDisplay, name="Available Flightplans")
         self.addForm("FLIGHTPLAN", FlightplanForm, name="Flightplan Editor")

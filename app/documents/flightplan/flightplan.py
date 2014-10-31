@@ -10,3 +10,6 @@ class Flightplan(mongoengine.Document):
 
     title = mongoengine.StringField(max_length=200, required=True, default="unnamed Flightplan")
     airplane = mongoengine.ReferenceField(Airplane, dbref=True)
+
+    def __str__(self):
+        return self.title

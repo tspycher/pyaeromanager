@@ -27,10 +27,19 @@ class FlightplanBuilder(object):
     def __init__(self, flightplan):
         self.__fligthplan = flightplan
 
+    def _checklist(self):
+        filename = os.path.join(tempfile.gettempdir(), "%s.pdf" % 'checklist')
+        elements = []
+        doc = PdfTemplate(filename=filename, title="%s - Checklist" % str(self.__fligthplan))
+        PS = doc.getStyleSheet()
+
+        doc.build(elements)
+        return filename
+
     def _takeoff(self):
         filename = os.path.join(tempfile.gettempdir(), "%s.pdf" % 'takeoff')
         elements = []
-        doc = PdfTemplate(filename=filename)
+        doc = PdfTemplate(filename=filename, title="%s - Takeoff Performance" % str(self.__fligthplan))
         PS = doc.getStyleSheet()
 
         doc.loadFrames()
@@ -59,7 +68,7 @@ class FlightplanBuilder(object):
         airplane = self.__fligthplan.airplane
 
         elements = []
-        doc = PdfTemplate(filename=filename)
+        doc = PdfTemplate(filename=filename, title="%s - Airplane Details" % str(self.__fligthplan))
         PS = doc.getStyleSheet()
 
         elements.append(Paragraph("%s %s" % (airplane.manufacturer, airplane.name), PS['Normal']))
@@ -78,9 +87,11 @@ class FlightplanBuilder(object):
     def buildPdf(self):
         to_pdffile = self._takeoff()
         ap_pdffile = self._airplane()
+        ck_pdffile = self._checklist()
 
         output = PdfFileWriter()
 
+        self.addAllPages(output, PdfFileReader(file(ck_pdffile, "rb")))
         self.addAllPages(output, PdfFileReader(file(to_pdffile, "rb")))
         self.addAllPages(output, PdfFileReader(file(ap_pdffile, "rb")))
 
@@ -94,9 +105,8 @@ class FlightplanBuilder(object):
                 pdfCracked = PdfCracker().crack(pdf)
                 files[pdf]  = file(pdfCracked, "rb")
                 files["%s_" % pdf] = PdfFileReader(files[pdf])
+
             self.addAllPages(output=output, input=files["%s_" % pdf])
-            #for pageNum in range(files["%s_" % pdf].numPages):
-            #    output.addPage(files["%s_" % pdf].getPage(pageNum))
 
         # write out the merged file
         outputPdf = os.path.join(self.outputdir, 'flightplan %s.pdf' % self.__fligthplan.title)

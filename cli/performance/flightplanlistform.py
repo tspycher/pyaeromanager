@@ -9,17 +9,15 @@ class FlightplanList(npyscreen.MultiLineAction):
         self.parent.parentApp.getForm('FLIGHTPLAN').document = act_on_this
         self.parent.parentApp.switchForm('FLIGHTPLAN')
 
-    def display_value(self, vl):
-        return vl.title
-
 class FlightplanListDisplay(npyscreen.FormMuttWithMenus):
     MAIN_WIDGET_CLASS = FlightplanList
 
     def create(self):
         super(FlightplanListDisplay, self).create()
+        self.wStatus1.value = "Aeromanger - Flightplans"
+        self.wStatus2.value = "^x for Menu - (c) 2014/15 by zerodine GmbH"
 
         self.add(npyscreen.TitleText, name = "Text:", value= "Press Escape to quit application" )
-        #self.how_exited_handers[npyscreen.wgwidget.EXITED_ESCAPE]  = self.exit_application
 
         main = self.new_menu("Main Menu")
         main.addItemsFromList([

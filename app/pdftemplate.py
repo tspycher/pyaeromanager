@@ -4,7 +4,8 @@ from reportlab.lib.pagesizes import A6
 from reportlab.lib.styles import StyleSheet1, ParagraphStyle
 from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT, TA_JUSTIFY
 from reportlab.lib import colors
-
+from reportlab.lib.units import cm, inch
+from reportlab.pdfgen import canvas
 from cStringIO import StringIO
 
 class PdfTemplate(SimpleDocTemplate):
@@ -12,16 +13,18 @@ class PdfTemplate(SimpleDocTemplate):
     fontSize1 = 6
     fontSize2 = 8
     fontSize3 = 12
+    title = None
 
     def __init__(self, filename, title=None, **kw):
         SimpleDocTemplate.__init__(self, filename,
                                    pagesize=A6,
-                                   leftMargin=8,
-                                   rightMargin=8,
-                                   topMargin=8,
-                                   bottomMargin=8,
+                                   leftMargin=11,
+                                   rightMargin=11,
+                                   topMargin=11,
+                                   bottomMargin=11,
                                    title=title,
                                    showBoundary=0)
+        self.title = title
 
     def loadFrames(self):
         frame1 = Frame(self.leftMargin, self.bottomMargin, self.width/2-6, self.height, id='col1')
@@ -31,12 +34,27 @@ class PdfTemplate(SimpleDocTemplate):
     def image(self, blobb):
         return Image(StringIO(blobb), width=200, height=160)
 
+    def build(self, flowables):
+        SimpleDocTemplate.build(self, flowables, onFirstPage=self._headerfooter, onLaterPages=self._headerfooter)
+
+    def _headerfooter(self, canvas, doc):
+        canvas.setLineWidth(1)
+
+        canvas.saveState()
+        canvas.setFont('Helvetica', 9)
+        canvas.drawString(4, 410, "%s" % self.title)
+        canvas.line(2, 407, 295, 407)
+        canvas.setFont('Helvetica', 6)
+        canvas.line(2, 10, 295, 10)
+        canvas.drawString(4, 4, "PyAeromanger 14/2015 by zerodine GmbH - Thomas Spycher @tspycher")
+        canvas.restoreState()
+
     def getStyleSheet(self):
         """Returns a stylesheet object"""
         stylesheet = StyleSheet1()
 
         stylesheet.add(ParagraphStyle(name='Normal',
-                                      fontName='Times-Roman',
+                                      fontName='Helvetica',
                                       fontSize=self.fontSize2,
                                       leading=12,
                                       spaceBefore=4,
@@ -51,7 +69,7 @@ class PdfTemplate(SimpleDocTemplate):
                        )
 
         stylesheet.add(ParagraphStyle(name='Comment',
-                                      fontName='Times-Italic')
+                                      fontName='Helvetica-Oblique')
                        )
 
         stylesheet.add(ParagraphStyle(name='Indent1',
@@ -65,12 +83,12 @@ class PdfTemplate(SimpleDocTemplate):
                        )
         stylesheet.add(ParagraphStyle(name='Italic',
                                       parent=stylesheet['BodyText'],
-                                      fontName = 'Times-Italic')
+                                      fontName = 'Helvetica-Oblique')
                        )
 
         stylesheet.add(ParagraphStyle(name='Heading1',
                                       parent=stylesheet['Normal'],
-                                      fontName = 'Times-Bold',
+                                      fontName = 'Helvetica-Bold',
                                       fontSize=self.fontSize3,
                                       leading=20,
                                       spaceBefore=10,
@@ -79,8 +97,8 @@ class PdfTemplate(SimpleDocTemplate):
 
         stylesheet.add(ParagraphStyle(name='Heading2',
                                       parent=stylesheet['Normal'],
-                                      fontName = 'Times-Bold',
-                                      fontSize=self.fontSize3,
+                                      fontName = 'Helvetica-Bold',
+                                      fontSize=self.fontSize3-1,
                                       leading=18,
                                       spaceBefore=10,
                                       spaceAfter=6),
@@ -88,8 +106,8 @@ class PdfTemplate(SimpleDocTemplate):
 
         stylesheet.add(ParagraphStyle(name='Heading3',
                                       parent=stylesheet['Normal'],
-                                      fontName = 'Times-BoldItalic',
-                                      fontSize=16,
+                                      fontName = 'Helvetica-BoldOblique',
+                                      fontSize=self.fontSize3-2,
                                       leading=16,
                                       spaceBefore=10,
                                       spaceAfter=6),
@@ -97,8 +115,8 @@ class PdfTemplate(SimpleDocTemplate):
 
         stylesheet.add(ParagraphStyle(name='Heading4',
                                       parent=stylesheet['Normal'],
-                                      fontName = 'Times-BoldItalic',
-                                      fontsize=14,
+                                      fontName = 'Helvetica-BoldOblique',
+                                      fontsize=self.fontSize3-2,
                                       leading=14,
                                       spaceBefore=8,
                                       spaceAfter=4),
@@ -106,8 +124,8 @@ class PdfTemplate(SimpleDocTemplate):
 
         stylesheet.add(ParagraphStyle(name='Heading5',
                                       parent=stylesheet['Normal'],
-                                      fontName = 'Times-BoldItalic',
-                                      fontsize=13,
+                                      fontName = 'Helvetica-BoldOblique',
+                                      fontsize=self.fontSize3-3,
                                       leading=13,
                                       spaceBefore=8,
                                       spaceAfter=4),
@@ -115,8 +133,8 @@ class PdfTemplate(SimpleDocTemplate):
 
         stylesheet.add(ParagraphStyle(name='Heading6',
                                       parent=stylesheet['Normal'],
-                                      fontName = 'Times-BoldItalic',
-                                      fontSize=self.fontSize2,
+                                      fontName = 'Helvetica-BoldOblique',
+                                      fontSize=self.fontSize3-4,
                                       leading=12,
                                       spaceBefore=8,
                                       spaceAfter=4),
@@ -124,8 +142,8 @@ class PdfTemplate(SimpleDocTemplate):
 
         stylesheet.add(ParagraphStyle(name='Title',
                                       parent=stylesheet['Normal'],
-                                      fontName = 'Times-Bold',
-                                      fontSize=22,
+                                      fontName = 'Helvetica-Bold',
+                                      fontSize=self.fontSize3,
                                       leading=22,
                                       spaceAfter=8,
                                       alignment=TA_CENTER
@@ -134,9 +152,9 @@ class PdfTemplate(SimpleDocTemplate):
 
         stylesheet.add(ParagraphStyle(name='Subtitle',
                                       parent=stylesheet['Normal'],
-                                      fontName = 'Times-Bold',
+                                      fontName = 'Helvetica-Bold',
                                       fontSize=self.fontSize3,
-                                      leading=20,
+                                      leading=self.fontSize3-2,
                                       spaceAfter=6,
                                       alignment=TA_CENTER
                                       ),
@@ -144,8 +162,8 @@ class PdfTemplate(SimpleDocTemplate):
 
         stylesheet.add(ParagraphStyle(name='TopicTitle',
                                       parent=stylesheet['Normal'],
-                                      fontName = 'Times-Bold',
-                                      fontSize=self.fontSize3,
+                                      fontName = 'Helvetica-Bold',
+                                      fontSize=self.fontSize3-2,
                                       leading=14,
                                       spaceAfter=6,
                                       ),
@@ -155,7 +173,7 @@ class PdfTemplate(SimpleDocTemplate):
             indent = 18*i
             stylesheet.add(ParagraphStyle(name='TopicItem%s' % i,
                                       parent=stylesheet['Normal'],
-                                      fontName = 'Times-Roman',
+                                      fontName = 'Helvetica',
                                       fontSize=self.fontSize2,
                                       leftIndent=indent,
                                       spaceBefore=0,
@@ -179,7 +197,7 @@ class PdfTemplate(SimpleDocTemplate):
                                       bulletIndent=0,
                                       spaceAfter=2,
                                       spaceBefore=2,
-                                      bulletFontName='Times-BoldItalic'),
+                                      bulletFontName='Helvetica-BoldOblique'),
                        alias='dl')
 
         stylesheet.add(ParagraphStyle(name='OrderedList',
@@ -229,7 +247,7 @@ class PdfTemplate(SimpleDocTemplate):
 
         stylesheet.add(ParagraphStyle(name='Caption',
                                       parent=stylesheet['Centred'],
-                                      fontName='Times-Italic'
+                                      fontName='Helvetica-Oblique'
                                       ))
 
         return stylesheet
